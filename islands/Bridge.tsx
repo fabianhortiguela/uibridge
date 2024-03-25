@@ -41,29 +41,17 @@ export default function MyIsland() {
 
     const [ bridger, setBridger ] = useState<BridgerState>({from: { chainId: "", value: "" },
                                                             to: { chainId: "", value: "" }})
-//py-2 bg-transparent focus:outline-none font-bold text-4xl placeholder:text-neutrals-slate500
 
-    const [ pija, setPija ] = useState("");
   const count = useSignal(0);
 
     const handleBridge = () => {
-        //handleStepper("burn", "");
         stepBurn();
         setStartBridge(true);
         setCanBridge(false);
     }
     
     const handleStepper = (in_:string, out_:string) => {
-
         stepBurn();
-        
-
-        /*
-        const nextStepUpdate = {...nextStep};
-        nextStepUpdate.in = in_;
-        nextStepUpdate.out = out_;
-        setNextStep(nextStepUpdate);
-        */
     }
     const stepBurn = () => {
         setBurn(true);
@@ -105,38 +93,29 @@ export default function MyIsland() {
         const targetBridge = target.name as keyof BridgerState;
 
         if(targetBridge in bridger){
-            //bridgerUpdate[targetBridge].value = target.value;
             const str = target.value.replace(/,/g, '.');
-            console.log("str", str)
             const dots = str.split('.').length - 1;
-            //let value = target.value;
-            console.log("dots", dots)
             if(dots <= 1){ 
-                bridgerUpdate.from.value = str;//target.value.replace(/\./g, '.');
+                bridgerUpdate.from.value = str;
                 bridgerUpdate.to.value = bridgerUpdate.from.value;
              };
 
                 
         }
-        console.log(bridgerUpdate)
         setBridger(bridgerUpdate);
-        
-
-        
-        /*
-        const toSendUpdate = {...toSend};
-        toSendUpdate.value = target.value.replace(/\./g, '.');
-        setToSend(toSendUpdate);
-
-        const toRecieveUpdate = {...toRevieve};
-        toRecieveUpdate.value = target.value.replace(/\./g, '.');
-        setToRevieve(toRecieveUpdate);
-        */
     }
 
     const handleChangeChain = (scope: string) => {
         setChangeChain(prev => ({ ...prev, scope: scope, show: !changeChain.show }));
         setBlur(true);
+    }
+
+    const getPrice = (dzhv: number, pricesOnChain: number) => {
+        let value:number = 0;
+        if(dzhv){
+            value = pricesOnChain * dzhv;
+        }
+        return parseFloat(value.toFixed(2));;
     }
 
     useEffect(() => {
@@ -161,14 +140,11 @@ export default function MyIsland() {
 
     useEffect(() => {
         console.log("nextStep", nextStep)
-        // Establecer el temporizador cuando el componente se monta
         if(nextStep.in.length || nextStep.out.length){
             const timerId = setTimeout(() => {
                 handleStepper("mint", "");
-            }, 5000); // 5 segundos
+            }, 5000);
         }
-    
-        // Retorno de la función de limpieza para cancelar el temporizador cuando el componente se desmonta
         return () => {/*clearTimeout(timerId)*/};
       }, [nextStep]);
     
@@ -224,7 +200,7 @@ export default function MyIsland() {
                                     disabled={startBridge}
                                 />
                                 <div class={`destiny_price text-xs text-neutrals-slate500`}>
-                                    {`$${(pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain] * parseFloat(toRevieve.value)).toLocaleString()}`}
+                                    {`$${getPrice(bridger.from.value, pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain])}`}
                                 </div>
                             </div>
                             <div class="flex flex-row items-center absolute -right-[45px] top-[50%] -translate-y-[50%]">
@@ -306,7 +282,7 @@ export default function MyIsland() {
                                     disabled={startBridge}
                                 />
                                 <div class={`destiny_price text-xs text-neutrals-slate500`}>
-                                    {`$${(pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain] * parseFloat(toRevieve.value)).toLocaleString()}`}
+                                    {`$${bridger.from.chainId ? (pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain] * parseFloat(bridger.to.value)).toLocaleString() : 0}`}
                                 </div>
                             </div>
                             <div class="flex flex-row-reverse items-center absolute -left-[45px] top-[50%] -translate-y-[50%]">
