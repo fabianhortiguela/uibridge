@@ -198,9 +198,10 @@ export default function MyIsland() {
                                     placeholder="0"
                                     onInput={handleChangeField}
                                     disabled={startBridge}
+                                    autocomplete="off"
                                 />
                                 <div class={`destiny_price text-xs text-neutrals-slate500`}>
-                                    {`$${getPrice(bridger.from.value, pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain])}`}
+                                    {`$${getPrice(parseFloat(bridger.from.value), pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain])}`}
                                 </div>
                             </div>
                             <div class="flex flex-row items-center absolute -right-[45px] top-[50%] -translate-y-[50%]">
@@ -280,9 +281,10 @@ export default function MyIsland() {
                                     placeholder="0"
                                     onInput={handleChangeField}
                                     disabled={startBridge}
+                                    autocomplete="off"
                                 />
                                 <div class={`destiny_price text-xs text-neutrals-slate500`}>
-                                    {`$${bridger.from.chainId ? (pricesOnChain[bridger.from.chainId as keyof typeof pricesOnChain] * parseFloat(bridger.to.value)).toLocaleString() : 0}`}
+                                {`$${getPrice(parseFloat(bridger.to.value), pricesOnChain[bridger.to.chainId as keyof typeof pricesOnChain])}`}
                                 </div>
                             </div>
                             <div class="flex flex-row-reverse items-center absolute -left-[45px] top-[50%] -translate-y-[50%]">
